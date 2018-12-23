@@ -1,4 +1,4 @@
-Setting up the configuration file
+Configuration file
 =================================
 
 Create a configuration:
