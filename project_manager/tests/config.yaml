@@ -1,0 +1,12 @@
+project_source: dummy_project
+working_dir: tmp
+
+exec_command:
+    - python3 run.py
+result_dirs:
+    - results
+
+base_config: dummy_project/my_conf.yaml
+config_parameters:
+    - key: message
+      values: [A, B, C]
