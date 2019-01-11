@@ -154,7 +154,7 @@ def build(config_path: str, dry: bool) -> None:
 
         # make spec sortable
         c = lambda x: '+'.join(x) if isinstance(x, list) else x
-        c2 = lambda x: x.replace('/', '_')
+        c2 = lambda x: str(x).replace('/', '_')
 
         spec = [(t, c(k), v, p) for t, k, v, p in spec]
 

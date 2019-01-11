@@ -9,4 +9,4 @@ result_dirs:
 base_config: dummy_project/my_conf.yaml
 config_parameters:
     - key: message
-      values: [A, B, C]
+      values: [A, B, null, D]

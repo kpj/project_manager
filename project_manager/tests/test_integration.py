@@ -36,6 +36,11 @@ def test_dummy():
         all_data = []
         for entry in os.scandir('tmp/aggregated_results/results/'):
             expected_data = entry.name.split('.')[0].split(':')[1]
+
+            # handle special case (null/None in config)
+            if expected_data == 'None':
+                expected_data = 'special'
+
             with open(entry.path) as fd:
                 data = fd.read()
 
@@ -44,5 +49,8 @@ def test_dummy():
 
         with open('config.yaml') as fd:
             config = yaml.load(fd)
-        expected_all_data = config['config_parameters'][0]['values']  # only one entry in list, thus this miust be the message
+
+        # only one entry in list, thus this must be the message
+        expected_all_data = [v if v is not None else 'special'
+                             for v in config['config_parameters'][0]['values']]
         assert set(all_data) == set(expected_all_data)
