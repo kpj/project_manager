@@ -3,7 +3,7 @@
 [![pypi version](https://img.shields.io/pypi/v/project_manager.svg)](https://pypi.org/project/project_manager/)
 [![license](https://img.shields.io/pypi/l/project_manager.svg)](https://pypi.org/project/project_manager/)
 
-A utility which makes running the same projects with various configurations as easy as pie.
+Easily run a project with various configuration setups.
 
 
 ## Installation
@@ -15,7 +15,19 @@ $ pip install project_manager
 
 ## Usage
 
-Check out the [documentation](https://project-manager.readthedocs.io/).
+Assuming that you have set up your [configuration file](https://project-manager.readthedocs.io/en/latest/setup_config.html) correctly,
+a typical workflow could look like this:
+
+```bash
+$ project_manager build  # setup environment
+[..]
+$ project_manager run  # execute commands
+[..]
+$ project_manager gather  # aggregate results
+[..]
+```
+
+For more information check out the [documentation](https://project-manager.readthedocs.io/).
 
 
 ## Development notes
@@ -24,4 +36,11 @@ Run tests:
 
 ```bash
 $ pytest
+```
+
+
+Publish a new version to PyPi:
+
+```bash
+$ poetry --build publish
 ```
