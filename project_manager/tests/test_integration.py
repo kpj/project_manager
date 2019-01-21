@@ -2,9 +2,12 @@ import os
 import shutil
 
 import yaml
+
+import pytest
 from click.testing import CliRunner
 
 from ..main import cli
+from ..commands import build
 
 
 def test_dummy():
@@ -54,3 +57,31 @@ def test_dummy():
         expected_all_data = [v if v is not None else 'special'
                              for v in config['config_parameters'][0]['values']]
         assert set(all_data) == set(expected_all_data)
+
+
+def test_invalid_config():
+    runner = CliRunner()
+
+    with runner.isolated_filesystem():
+        # setup environment
+        with open('my_conf.yaml', 'w') as fd:
+            fd.write("""
+actual_key: 42
+another_key: foo
+            """)
+
+        with open('config.yaml', 'w') as fd:
+            fd.write("""
+project_source: fubar
+working_dir: tmp
+base_config: my_conf.yaml
+config_parameters:
+    - key: misspelled_key
+      values: [invalid]
+    - key: another_key
+      values: [bar, baz, qux]
+            """)
+
+        # run commands
+        with pytest.raises(RuntimeError, match='misspelled_key'):
+            build('config.yaml')
