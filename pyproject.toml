@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "project_manager"
+version = "0.0.1"
+description = "Easily run a project with various configuration setups"
+
+authors = ["kpj <kpjkpjkpjkpjkpjkpj@gmail.com>"]
+license = "MIT"
+
+readme = "README.md"
+
+repository = "https://github.com/kpj/project_manager"
+documentation = "https://project-manager.readthedocs.io/"
+
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+PyYAML = "^3.13"
+pprint = "^0.1.0"
+sh = "^1.12"
+tqdm = "^4.29"
+click = "^7.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.1"
+
+
+[tool.poetry.scripts]
+project_manager = 'project_manager:main'
