@@ -38,7 +38,7 @@ def main(config_path: str, dry: bool = False):
             # sanity checks
             for e in entry['paired']:
                 if len(e['values']) != len(entry['values']):
-                    raise RuntimeError(f'Invalid pairing for "{e["key"]}"')
+                    raise RuntimeError(f'Invalid pairing for "{entry["key"]}" and "{e["key"]}"')
 
             # generate associations
             paired_data = []

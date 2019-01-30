@@ -59,7 +59,7 @@ def test_dummy():
         assert set(all_data) == set(expected_all_data)
 
 
-def test_invalid_config():
+def test_key_misspelling():
     runner = CliRunner()
 
     with runner.isolated_filesystem():
@@ -83,5 +83,69 @@ config_parameters:
             """)
 
         # run commands
-        with pytest.raises(RuntimeError, match='misspelled_key'):
+        with pytest.raises(RuntimeError, match='> misspelled_key'):
+            build('config.yaml')
+
+
+def test_mismatching_key_pairing_name():
+    runner = CliRunner()
+
+    with runner.isolated_filesystem():
+        # setup environment
+        with open('my_conf.yaml', 'w') as fd:
+            fd.write("""
+my_key: 1
+other_key: a
+            """)
+
+        with open('config.yaml', 'w') as fd:
+            fd.write("""
+project_source: fubar
+working_dir: tmp
+base_config: my_conf.yaml
+config_parameters:
+    - key: my_key
+      values: [2,3,4]
+      paired:
+          - key: other_key_wrong
+            values: [b,c,d]
+            """)
+
+        # run commands
+        with pytest.raises(
+            RuntimeError,
+            match='> other_key_wrong'
+        ):
+            build('config.yaml')
+
+
+def test_mismatching_key_pairing_length():
+    runner = CliRunner()
+
+    with runner.isolated_filesystem():
+        # setup environment
+        with open('my_conf.yaml', 'w') as fd:
+            fd.write("""
+my_key: 1
+other_key: a
+            """)
+
+        with open('config.yaml', 'w') as fd:
+            fd.write("""
+project_source: fubar
+working_dir: tmp
+base_config: my_conf.yaml
+config_parameters:
+    - key: my_key
+      values: [2,3,4]
+      paired:
+          - key: other_key
+            values: [b,c]
+            """)
+
+        # run commands
+        with pytest.raises(
+            RuntimeError,
+            match='Invalid pairing for "my_key" and "other_key"'
+        ):
             build('config.yaml')
