@@ -8,7 +8,7 @@ import itertools
 from pprint import pprint
 
 import sh
-import yaml
+import anyconfig
 from tqdm import tqdm
 
 from ..utils import load_config, assign_to_dict, dict_to_keyset
@@ -16,7 +16,7 @@ from ..utils import load_config, assign_to_dict, dict_to_keyset
 
 def main(config_path: str, dry: bool = False):
     config = load_config(config_path)
-    base_config = load_config(config['base_config'])
+    base_config = anyconfig.load(config['base_config'])
 
     # if needed prepare environment
     if not dry:
@@ -38,7 +38,8 @@ def main(config_path: str, dry: bool = False):
             # sanity checks
             for e in entry['paired']:
                 if len(e['values']) != len(entry['values']):
-                    raise RuntimeError(f'Invalid pairing for "{entry["key"]}" and "{e["key"]}"')
+                    raise RuntimeError(
+                        f'Invalid pairing for "{entry["key"]}" & "{e["key"]}"')
 
             # generate associations
             paired_data = []
@@ -58,13 +59,9 @@ def main(config_path: str, dry: bool = False):
             tmp.append(('config', entry['key'], val, pair))
         config_schedule.append(tmp)
 
-    # TODO: make config handling better
-    if 'extra_parameters' in config:
-        extra_schedule = [[('extra', k, v, None) for v in vs]
-                          for k, vs in config['extra_parameters'].items()
-                          if k not in special_extra_keys]
-    else:
-        extra_schedule = []
+    extra_schedule = [[('extra', k, v, None) for v in vs]
+                      for k, vs in config['extra_parameters'].items()
+                      if k not in special_extra_keys]
     schedule = config_schedule + extra_schedule
 
     for spec in tqdm(
@@ -102,22 +99,14 @@ def main(config_path: str, dry: bool = False):
             raise RuntimeError(msg)
 
         # make spec sortable
-        c = lambda x: '+'.join(x) if isinstance(x, list) else x
-        c2 = lambda x: str(x).replace('/', '_')
+        c = lambda x: '+'.join(x) if isinstance(x, list) else x  # noqa: E731
+        c2 = lambda x: str(x).replace('/', '_')  # noqa: E731
 
         spec = [(t, c(k), v, p) for t, k, v, p in spec]
 
         # extract extra info
         extra_info = {k: v for t, k, v, p in sorted(spec) if t == 'extra'}
-
-        # TODO: make config handling better
-        if (
-            'extra_parameters' not in config or
-            'repetitions' not in config['extra_parameters']
-        ):
-            repetition_count = 1
-        else:
-            repetition_count = config['extra_parameters']['repetitions']
+        repetition_count = config['extra_parameters']['repetitions']
 
         for rep in range(repetition_count):
             # assemble index
@@ -147,19 +136,17 @@ def main(config_path: str, dry: bool = False):
                 sh.git.checkout(extra_info['git_branch'], _cwd=target_dir)
 
             conf_name = os.path.basename(config['base_config'])
-            with open(f'{target_dir}/{conf_name}', 'w') as fd:
-                yaml.dump(cur_conf, fd)
+            anyconfig.dump(cur_conf, f'{target_dir}/{conf_name}')
 
-            if 'symlinks' in config:
-                for sym in config['symlinks']:
-                    sym_path = os.path.relpath(os.path.join(
-                        exec_dir, os.path.dirname(config_path), sym),
-                        start=target_dir)
-                    if not os.path.exists(os.path.join(target_dir, sym_path)):
-                        print(f'Cannot find "{sym_path}"')
+            for sym in config['symlinks']:
+                sym_path = os.path.relpath(os.path.join(
+                    exec_dir, os.path.dirname(config_path), sym),
+                    start=target_dir)
+                if not os.path.exists(os.path.join(target_dir, sym_path)):
+                    print(f'Cannot find "{sym_path}"')
 
-                    sym_base = os.path.basename(os.path.normpath(sym))
+                sym_base = os.path.basename(os.path.normpath(sym))
 
-                    os.symlink(
-                        sym_path, os.path.join(target_dir, sym_base),
-                        target_is_directory=os.path.isdir(sym))
+                os.symlink(
+                    sym_path, os.path.join(target_dir, sym_base),
+                    target_is_directory=os.path.isdir(sym))

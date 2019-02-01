@@ -3,10 +3,14 @@ import functools
 
 import yaml
 
+from .config_validation import main as validate
+
 
 def load_config(fname):
     with open(fname) as fd:
-        return yaml.load(fd)
+        config = yaml.load(fd)
+
+    return validate(config)
 
 
 def get_by_keylist(root, items):
