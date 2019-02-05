@@ -37,6 +37,22 @@ def validate_config(data, schema):
 
 def main(data):
     schema = {
+        'definitions': {
+            'config_items': {
+                'type': 'object',
+                'properties': {
+                    'key': {'type': ['string', 'array']},
+                    'values': {'type': 'array'},
+                    'paired': {
+                        'type': 'array',
+                        'items': {'$ref': '#/definitions/config_items'}
+                    }
+                },
+                'additionalProperties': False,
+                'required': ['key', 'values']
+            }
+        },
+
         'type': 'object',
         'properties': {
             'project_source': {'type': 'string'},
@@ -61,27 +77,7 @@ def main(data):
             'base_config': {'type': 'string'},
             'config_parameters': {
                 'type': 'array',
-                'items': {
-                    'type': 'object',
-                    'properties': {
-                        'key': {'type': ['string', 'array']},
-                        'values': {},
-                        'paired': {
-                            'type': 'array',
-                            'items': {
-                                'type': 'object',
-                                'properties': {
-                                    'key': {'type': ['string', 'array']},
-                                    'values': {},
-                                },
-                                'additionalProperties': False,
-                                'required': ['key', 'values']
-                            }
-                        }
-                    },
-                    'additionalProperties': False,
-                    'required': ['key', 'values']
-                }
+                'items': {'$ref': '#/definitions/config_items'}
             },
             'extra_parameters': {
                 'type': 'object',
