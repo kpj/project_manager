@@ -146,6 +146,6 @@ config_parameters:
         # run commands
         with pytest.raises(
             RuntimeError,
-            match='Invalid pairing for "my_key" and "other_key"'
+            match='Invalid pairing for "my_key" & "other_key"'
         ):
             build('config.yaml')
