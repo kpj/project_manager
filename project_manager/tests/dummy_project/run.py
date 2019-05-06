@@ -15,6 +15,9 @@ def main():
         else:
             fd.write(config['message'] * num)
 
+    with open('.'.join(config['extra']['filename']), 'w') as fd:
+        fd.write('fubar')
+
 
 if __name__ == '__main__':
     main()

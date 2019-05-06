@@ -9,7 +9,7 @@ from click.testing import CliRunner
 
 from ..main import cli
 from ..commands import build
-from ..utils import PARAMETER_ASSIGNMENT, PARAMETER_SEPARATOR
+from ..utils import SECTION_SEPARATOR, PARAMETER_ASSIGNMENT, PARAMETER_SEPARATOR
 
 
 def test_dummy():
@@ -24,21 +24,40 @@ def test_dummy():
 
         # run commands
         os.chdir(root_iso)
-        result_build = runner.invoke(cli, ['build'])
+        result_build = runner.invoke(cli, ['build'], catch_exceptions=False)
         assert result_build.exit_code == 0
 
         os.chdir(root_iso)
-        result_run = runner.invoke(cli, ['run'])
+        result_run = runner.invoke(cli, ['run'], catch_exceptions=False)
         assert result_run.exit_code == 0
 
         os.chdir(root_iso)
-        result_gather = runner.invoke(cli, ['gather'])
+        result_gather = runner.invoke(cli, ['gather'], catch_exceptions=False)
         assert result_gather.exit_code == 0
 
-        # check output
+        # check individual outputs
+        assert len(os.listdir('tmp/')) == 12 + 1  # |run| + |agg|
+
+        for entry in os.scandir('tmp/'):
+            if not entry.name.startswith(f'run{SECTION_SEPARATOR}'):
+                continue
+
+            expected_data = dict([e.split(PARAMETER_ASSIGNMENT)
+                                  for e in (entry.name
+                                                 .split('.')[1]
+                                                 .split(PARAMETER_SEPARATOR))])
+            fname = {
+                '1': 'foo.txt',
+                '2': 'bar.md',
+                '3': 'baz.rst'
+            }[expected_data['number']]
+
+            assert os.path.isfile(os.path.join(entry.path, fname))
+
+        # check aggregated output
         os.chdir(root_iso)
 
-        # based on filesnames
+        # based on filenames
         all_data = []
         for entry in os.scandir('tmp/aggregated_results/results/'):
             expected_data = dict([e.split(PARAMETER_ASSIGNMENT)

@@ -12,3 +12,6 @@ config_parameters:
       values: [A, B, null, D]
     - key: number
       values: [1, 2, 3]
+      paired:
+          - key: [extra, filename]
+            values: [[foo, txt], [bar, md], [baz, rst]]

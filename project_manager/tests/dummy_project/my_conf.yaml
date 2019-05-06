@@ -1,2 +1,4 @@
 message: 'this is important'
 number: 1
+extra:
+    filename: [foo, txt]
