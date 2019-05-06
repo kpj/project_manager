@@ -6,6 +6,12 @@ import yaml
 from .config_validation import main as validate
 
 
+SECTION_SEPARATOR = '.'
+PARAMETER_SEPARATOR = ','
+NESTED_PARAMETER_SEPARATOR = '+'
+PARAMETER_ASSIGNMENT = '='
+
+
 def load_config(fname):
     with open(fname) as fd:
         config = yaml.load(fd)

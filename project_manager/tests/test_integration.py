@@ -1,5 +1,6 @@
 import os
 import shutil
+import itertools
 
 import yaml
 
@@ -8,6 +9,7 @@ from click.testing import CliRunner
 
 from ..main import cli
 from ..commands import build
+from ..utils import PARAMETER_ASSIGNMENT, PARAMETER_SEPARATOR
 
 
 def test_dummy():
@@ -36,26 +38,34 @@ def test_dummy():
         # check output
         os.chdir(root_iso)
 
+        # based on filesnames
         all_data = []
         for entry in os.scandir('tmp/aggregated_results/results/'):
-            expected_data = entry.name.split('.')[0].split(':')[1]
+            expected_data = dict([e.split(PARAMETER_ASSIGNMENT)
+                                  for e in (entry.name
+                                                 .split('.')[1]
+                                                 .split(PARAMETER_SEPARATOR))])
 
             # handle special case (null/None in config)
-            if expected_data == 'None':
-                expected_data = 'special'
+            if expected_data['message'] == 'None':
+                expected_data['message'] = 'special'
 
             with open(entry.path) as fd:
                 data = fd.read()
 
-            assert expected_data == data
+            assert expected_data['message'] * int(expected_data['number']) == data
             all_data.append(data)
 
+        # based on config
         with open('config.yaml') as fd:
             config = yaml.load(fd)
 
-        # only one entry in list, thus this must be the message
-        expected_all_data = [v if v is not None else 'special'
-                             for v in config['config_parameters'][0]['values']]
+        expected_all_data = [
+            m * n
+            for m, n in itertools.product(
+                *[[v if v is not None else 'special' for v in e['values']]
+                  for e in config['config_parameters']])
+        ]
         assert set(all_data) == set(expected_all_data)
 
 

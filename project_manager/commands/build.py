@@ -11,7 +11,15 @@ import sh
 import anyconfig
 from tqdm import tqdm
 
-from ..utils import load_config, assign_to_dict, dict_to_keyset
+from ..utils import (
+    SECTION_SEPARATOR,
+    PARAMETER_SEPARATOR,
+    NESTED_PARAMETER_SEPARATOR,
+    PARAMETER_ASSIGNMENT,
+    load_config,
+    assign_to_dict,
+    dict_to_keyset
+)
 
 
 def main(config_path: str, dry: bool = False):
@@ -99,7 +107,9 @@ def main(config_path: str, dry: bool = False):
             raise RuntimeError(msg)
 
         # make spec sortable
-        c = lambda x: '+'.join(x) if isinstance(x, list) else x  # noqa: E731
+        c = lambda x: (NESTED_PARAMETER_SEPARATOR.join(x)
+                       if isinstance(x, list)
+                       else x)  # noqa: E731
         c2 = lambda x: str(x).replace('/', '_')  # noqa: E731
 
         spec = [(t, c(k), v, p) for t, k, v, p in spec]
@@ -110,9 +120,14 @@ def main(config_path: str, dry: bool = False):
 
         for rep in range(repetition_count):
             # assemble index
-            idx = ';'.join([f'{k}:{c2(v)}' for t, k, v, p in sorted(spec)])
-            rep_app = f';repetition:{rep+1}' if repetition_count > 1 else ''
-            target_dir = f'run__{idx}{rep_app}'
+            idx = PARAMETER_SEPARATOR.join(
+                [f'{k}{PARAMETER_ASSIGNMENT}{c2(v)}'
+                 for t, k, v, p in sorted(spec)])
+            rep_app = (
+                f'{PARAMETER_SEPARATOR}repetition{PARAMETER_ASSIGNMENT}{rep+1}'
+                if repetition_count > 1
+                else '')
+            target_dir = f'run{SECTION_SEPARATOR}{idx}{rep_app}'
 
             # abort if in dry run
             if dry:

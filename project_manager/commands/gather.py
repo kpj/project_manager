@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from ..utils import load_config
+from ..utils import SECTION_SEPARATOR, load_config
 
 
 def main(config_path: str, output: str) -> None:
@@ -17,7 +17,7 @@ def main(config_path: str, output: str) -> None:
 
     # iterate over individual pipeline runs
     for entry in os.scandir(config['working_dir']):
-        if not entry.name.startswith('run__'):
+        if not entry.name.startswith(f'run{SECTION_SEPARATOR}'):
             continue
         print(entry.name)
 
