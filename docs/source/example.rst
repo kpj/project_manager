@@ -62,18 +62,18 @@ We can then run the pipeline:
   $ project_manager build
   Setting up environments: 100%|██████████████████████████| 3/3 [00:00<00:00, 477.57it/s]
   $ project_manager run
-  run__message:A
+  run.message=A
    > python3 run.py
-  run__message:B
+  run.message=B
    > python3 run.py
-  run__message:C
+  run.message=C
    > python3 run.py
   $ project_manager gather
-  run__message:A
+  run.message=A
    > data.txt
-  run__message:B
+  run.message=B
    > data.txt
-  run__message:C
+  run.message=C
    > data.txt
 
 Here's the result:
@@ -84,20 +84,20 @@ Here's the result:
   tmp/
   ├── aggregated_results
   │   └── results
-  │       ├── data__message:A.txt
-  │       ├── data__message:B.txt
-  │       └── data__message:C.txt
-  ├── run__message:A
+  │       ├── data.message=A.txt
+  │       ├── data.message=B.txt
+  │       └── data.message=C.txt
+  ├── run.message=A
   │   ├── my_conf.yaml
   │   ├── results
   │   │   └── data.txt
   │   └── run.py
-  ├── run__message:B
+  ├── run.message=B
   │   ├── my_conf.yaml
   │   ├── results
   │   │   └── data.txt
   │   └── run.py
-  └── run__message:C
+  └── run.message=C
       ├── my_conf.yaml
       ├── results
       │   └── data.txt
