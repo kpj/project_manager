@@ -1,4 +1,5 @@
 import os
+import sys
 import copy
 import shutil
 import operator
@@ -28,7 +29,10 @@ def main(config_path: str, dry: bool = False):
 
     # if needed prepare environment
     if not dry:
-        shutil.rmtree(config['working_dir'], ignore_errors=True)
+        if os.path.exists(config['working_dir']):
+            print(f'Error: "{config["working_dir"]}" does already exist.')
+            sys.exit(-1)
+
         os.makedirs(config['working_dir'])
 
         exec_dir = os.getcwd()
