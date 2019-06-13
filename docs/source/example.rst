@@ -45,7 +45,7 @@ A quick usage overview:
 
   def main():
     with open('my_conf.yaml') as fd:
-        config = yaml.load(fd)
+        config = yaml.full_load(fd)
 
     os.makedirs('results')
     with open('results/data.txt', 'w') as fd:

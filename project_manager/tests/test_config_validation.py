@@ -25,7 +25,7 @@ def test_minimal_config():
 
 
 def test_maximal_config():
-    data = yaml.load("""
+    data = yaml.full_load("""
 project_source: '/path/to/project/'
 working_dir: 'output/'
 

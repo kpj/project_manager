@@ -77,7 +77,7 @@ def test_dummy():
 
         # based on config
         with open('config.yaml') as fd:
-            config = yaml.load(fd)
+            config = yaml.full_load(fd)
 
         expected_all_data = [
             m * n

@@ -4,7 +4,7 @@ import yaml
 
 def main():
     with open('my_conf.yaml') as fd:
-        config = yaml.load(fd)
+        config = yaml.full_load(fd)
     msg = config['message']
     num = config['number']
 
