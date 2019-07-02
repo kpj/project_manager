@@ -3,8 +3,9 @@ working_dir: tmp
 
 exec_command:
     - python3 run.py
-result_dirs:
+result_files:
     - results
+    - little_file.txt
 
 base_config: dummy_project/my_conf.yaml
 config_parameters:

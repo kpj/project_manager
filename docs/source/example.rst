@@ -21,7 +21,7 @@ A quick usage overview:
 
   exec_command:
       - python3 run.py
-  result_dirs:
+  result_files:
       - results
 
   base_config: dummy_project/my_conf.yaml

@@ -63,7 +63,7 @@ def main(data):
                 'items': {'type': 'string'},
                 'default': []
             },
-            'result_dirs': {
+            'result_files': {
                 'type': 'array',
                 'items': {'type': 'string'},
                 'default': []

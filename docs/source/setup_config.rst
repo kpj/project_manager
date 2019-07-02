@@ -10,7 +10,8 @@ Create a configuration:
 
   exec_command:  # list of commands that will be executed in each project setup
       - <python ..>
-  result_dirs:  # list of files/folders that will be extracted after successful execution
+  result_files:  # list of files/folders that will be extracted after successful execution
+      - <result file>
       - <result dir>
 
   base_config: <path>  # path to the raw configuration file (typically part of your project)

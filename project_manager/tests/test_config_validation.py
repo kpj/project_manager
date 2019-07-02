@@ -19,7 +19,7 @@ def test_minimal_config():
         'base_config': '/path/to/project/config.yaml',
         'extra_parameters': {'repetitions': 1},
         'exec_command': [],
-        'result_dirs': [],
+        'result_files': [],
         'symlinks': []
     }
 
@@ -31,7 +31,7 @@ working_dir: 'output/'
 
 exec_command:
     - snakemake -pr
-result_dirs:
+result_files:
     - images
     - results
 
