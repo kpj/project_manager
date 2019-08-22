@@ -20,4 +20,4 @@ Usage
 
   setup_config
   commands
-  example/Example
+  Example
