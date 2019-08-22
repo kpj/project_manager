@@ -19,7 +19,6 @@ pprint = "^0.1.0"
 sh = "^1.12"
 tqdm = "^4.29"
 click = "^7.0"
-jsonschema = "^2.6"
 anyconfig = "^0.9.8"
 
 
