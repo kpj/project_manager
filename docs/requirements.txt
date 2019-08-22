@@ -1,4 +1,7 @@
 sphinx
 nbsphinx
 
+jupyter
+nbconvert
+
 project_manager
