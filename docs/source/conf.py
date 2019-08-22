@@ -182,3 +182,14 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+# install bash_kernel if needed
+import json
+import subprocess
+
+kernel_str = subprocess.check_output(['jupyter', 'kernelspec', 'list', '--json'])
+kernel_data = json.loads(kernel_str)
+
+if 'bash' not in kernel_data['kernelspecs']:
+    # see https://github.com/takluyver/bash_kernel
+    subprocess.call(['python', '-m', 'bash_kernel.install'])

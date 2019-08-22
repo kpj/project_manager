@@ -3,5 +3,6 @@ nbsphinx
 
 jupyter
 nbconvert
+bash_kernel
 
 project_manager
