@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "project_manager"
-version = "0.1.0"
+version = "0.2.0"
 description = "Easily run a project with various configuration setups"
 
 authors = ["kpj <kpjkpjkpjkpjkpjkpj@gmail.com>"]
