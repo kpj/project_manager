@@ -5,4 +5,4 @@ jupyter
 nbconvert
 bash_kernel
 
-project_manager
+project_manager>=0.2
