@@ -1,4 +1,5 @@
 import os
+import glob
 import shutil
 import itertools
 
@@ -86,6 +87,14 @@ def test_dummy():
                   for e in config['config_parameters']])
         ]
         assert set(all_data) == set(expected_all_data)
+
+        # test nesting
+        nested_file_list = glob.glob('tmp/aggregated_results/nested/folders/deep*.txt')
+        assert len(nested_file_list) == len(all_data)
+
+        for fname in nested_file_list:
+            with open(fname) as fd:
+                assert fd.read() == 'does not matter'
 
 
 def test_key_misspelling():

@@ -40,7 +40,9 @@ def main(config_path: str, output: str) -> None:
 
             if os.path.isfile(res_path):
                 print(f' > {res_file_}')
-                copy_file(idx, res_path, target_dir)
+                copy_file(
+                    idx, res_path, target_dir,
+                    sub_dir=os.path.dirname(res_file_))
             elif os.path.isdir(res_path):
                 for file_ in os.scandir(res_path):
                     print(f' > {os.path.join(res_file_, file_.name)}')

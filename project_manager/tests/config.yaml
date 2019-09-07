@@ -6,6 +6,7 @@ exec_command:
 result_files:
     - results
     - little_file.txt
+    - nested/folders/deep.txt
 
 base_config: dummy_project/my_conf.yaml
 config_parameters:

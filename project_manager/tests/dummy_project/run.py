@@ -18,6 +18,10 @@ def main():
         else:
             fd.write(config['message'] * num)
 
+    os.makedirs('nested/folders/')
+    with open('nested/folders/deep.txt', 'w') as fd:
+        fd.write('does not matter')
+
     with open('.'.join(config['extra']['filename']), 'w') as fd:
         fd.write('fubar')
 
