@@ -11,6 +11,8 @@ PARAMETER_SEPARATOR = ','
 NESTED_PARAMETER_SEPARATOR = '+'
 PARAMETER_ASSIGNMENT = '='
 
+TEMP_CONFIG_NAME = '.project_manager_config.yaml'
+
 
 def load_config(fname):
     with open(fname) as fd:

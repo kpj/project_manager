@@ -74,7 +74,10 @@ def main(data):
                 'default': []
             },
 
-            'base_config': {'type': 'string'},
+            'base_config': {
+                'type': ['string', 'null'],
+                'default': None
+            },
             'config_parameters': {
                 'type': 'array',
                 'items': {'$ref': '#/definitions/config_items'}

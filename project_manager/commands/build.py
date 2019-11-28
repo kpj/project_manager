@@ -17,6 +17,7 @@ from ..utils import (
     PARAMETER_SEPARATOR,
     NESTED_PARAMETER_SEPARATOR,
     PARAMETER_ASSIGNMENT,
+    TEMP_CONFIG_NAME,
     load_config,
     assign_to_dict,
     dict_to_keyset
@@ -25,7 +26,9 @@ from ..utils import (
 
 def main(config_path: str, dry: bool = False):
     config = load_config(config_path)
-    base_config = anyconfig.load(config['base_config'])
+    base_config = ({}
+                   if config['base_config'] is None
+                   else anyconfig.load(config['base_config']))
 
     # if needed prepare environment
     if not dry:
@@ -98,17 +101,18 @@ def main(config_path: str, dry: bool = False):
                     assign_to_dict(cur_conf, k, v)
 
         # assert subset relation (so only valid keys are used)
-        cur_keys = dict_to_keyset(cur_conf)
-        base_keys = dict_to_keyset(base_config)
-        if cur_keys != base_keys:
-            msg = 'Generated config is invalid.\n'
+        if config['base_config'] is not None:
+            cur_keys = dict_to_keyset(cur_conf)
+            base_keys = dict_to_keyset(base_config)
+            if cur_keys != base_keys:
+                msg = 'Generated config is invalid.\n'
 
-            only_cur = cur_keys - base_keys
-            msg += 'Only in generated config:\n'
-            for k in only_cur:
-                msg += f' > {k}\n'
+                only_cur = cur_keys - base_keys
+                msg += 'Only in generated config:\n'
+                for k in only_cur:
+                    msg += f' > {k}\n'
 
-            raise RuntimeError(msg)
+                raise RuntimeError(msg)
 
         # make spec sortable
         c = lambda x: (NESTED_PARAMETER_SEPARATOR.join(x)
@@ -154,7 +158,10 @@ def main(config_path: str, dry: bool = False):
             if 'git_branch' in extra_info:
                 sh.git.checkout(extra_info['git_branch'], _cwd=target_dir)
 
-            conf_name = os.path.basename(config['base_config'])
+            if config['base_config'] is not None:
+                conf_name = os.path.basename(config['base_config'])
+            else:
+                conf_name = TEMP_CONFIG_NAME
             anyconfig.dump(cur_conf, f'{target_dir}/{conf_name}')
 
             for sym in config['symlinks']:

@@ -187,3 +187,40 @@ config_parameters:
             match='Invalid pairing for "my_key" & "other_key"'
         ):
             build('config.yaml')
+
+
+def test_no_base_config():
+    runner = CliRunner()
+
+    with runner.isolated_filesystem():
+        # setup environment
+        root_iso = os.getcwd()
+
+        os.makedirs('fubar')
+
+        with open('config.yaml', 'w') as fd:
+            fd.write("""
+project_source: fubar
+working_dir: tmp
+
+exec_command:
+    - echo {my_key}
+    - "echo 'The result: {my_key}!' > results.txt"
+
+config_parameters:
+    - key: my_key
+      values: [2,3,4]
+            """)
+
+        # run commands
+        os.chdir(root_iso)
+        result_build = runner.invoke(cli, ['build'], catch_exceptions=False)
+        assert result_build.exit_code == 0
+
+        os.chdir(root_iso)
+        result_run = runner.invoke(cli, ['run'], catch_exceptions=False)
+        assert result_run.exit_code == 0
+
+        os.chdir(root_iso)
+        result_gather = runner.invoke(cli, ['gather'], catch_exceptions=False)
+        assert result_gather.exit_code == 0
